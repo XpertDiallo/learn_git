@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="description" content="TextAura formate vos textes et publications sociales en toute confidentialité.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>TextAura</title>
+</head>
+<body>
+  <a class="skip" href="#tools">Aller aux outils</a>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="logo" aria-hidden="true">Aa✦</div>
+      <div class="brand"><h1>TextAura</h1><p data-i18n="tag">Donnez du style à vos publications ✨</p></div>
+      <label class="lang"><span class="sr-only">Langue</span><select id="language" aria-label="Langue"><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option><option value="de">DE</option><option value="ar">AR</option></select></label>
+    </header>
+
+    <section class="card editor-card" aria-labelledby="editor-title">
+      <div class="card-title"><h2 id="editor-title" data-i18n="your">Votre texte</h2><div class="counter"><span id="count">0 caractères</span><button id="hide-keyboard" class="icon-btn" type="button" aria-label="Masquer le clavier">⌨↓</button></div></div>
+      <p class="tip" data-i18n="tip">Sélectionnez un passage, puis touchez un outil.</p>
+      <textarea id="editor" rows="6" maxlength="10000" spellcheck="true" autocomplete="off" placeholder="Écrivez ou collez votre publication ici…"></textarea>
+      <div class="editor-actions">
+        <button id="undo" type="button"><span>↶</span><span data-i18n="undo">Annuler</span></button>
+        <button id="redo" type="button"><span>↷</span><span data-i18n="redo">Rétablir</span></button>
+        <button id="emoji-open" type="button"><span>😊</span><span data-i18n="emoji">Emojis</span></button>
+        <button id="clear" type="button"><span>⌫</span><span data-i18n="clear">Effacer</span></button>
+      </div>
+    </section>
+
+    <main id="tools">
+      <section class="card"><h2 data-i18n="styles">Styles rapides</h2><div id="style-tools" class="tool-row" role="toolbar" aria-label="Styles"></div><h3 data-i18n="decor">Décorations</h3><div id="decor-tools" class="tool-row" role="toolbar" aria-label="Décorations"></div></section>
+      <section class="card"><h2 data-i18n="formats">Casse et formats</h2><div id="case-tools" class="tool-row" role="toolbar" aria-label="Formats"></div></section>
+      <section class="card"><h2 data-i18n="colors">Couleurs et surlignage</h2><div class="tool-row">
+        <button id="text-color" class="tool"><strong>A</strong><span data-i18n="textColor">Texte</span></button>
+        <button id="highlight-color" class="tool"><strong>▰</strong><span data-i18n="highlightColor">Surligneur</span></button>
+        <button id="underline-color" class="tool"><strong>A̲</strong><span data-i18n="underlineColor">Soulignement</span></button>
+        <button id="remove-colors" class="tool"><strong>✕</strong><span data-i18n="removeColors">Retirer couleurs</span></button>
+      </div></section>
+      <section class="card"><h2 data-i18n="paragraphs">Alignement, paragraphes et listes</h2><div id="align-tools" class="tool-row" role="toolbar" aria-label="Alignement"></div><h3>Listes</h3><div id="list-tools" class="tool-row" role="toolbar" aria-label="Listes"></div></section>
+      <section class="card preview-card"><h2 data-i18n="preview">Aperçu</h2><div id="preview" class="preview empty" aria-live="polite">…</div></section>
+      <section class="card share-card"><div class="share-actions"><button id="copy" class="primary" type="button">⧉ <span data-i18n="copy">Copier</span></button><button id="share" class="secondary" type="button">↗ <span data-i18n="share">Partager</span></button><button id="png" class="accent" type="button">▣ <span data-i18n="png">Exporter PNG</span></button></div></section>
+      <p class="privacy" data-i18n="privacy">🔒 Hors ligne, sans compte et sans traçage.</p>
+    </main>
+  </div>
+
+  <dialog id="color-dialog" aria-labelledby="color-title"><div class="dialog-head"><h2 id="color-title" data-i18n="choose">Choisir une couleur</h2><button type="button" data-close aria-label="Fermer">✕</button></div><div id="color-grid" class="color-grid"></div><button class="dialog-close" type="button" data-close data-i18n="close">Fermer</button></dialog>
+  <dialog id="emoji-dialog" class="emoji-dialog" aria-labelledby="emoji-title"><div class="dialog-head"><h2 id="emoji-title">Bibliothèque d’emojis</h2><button type="button" data-close aria-label="Fermer">✕</button></div><input id="emoji-search" class="emoji-search" type="search" placeholder="Rechercher un emoji…" autocomplete="off"><div id="emoji-tabs" class="emoji-tabs"></div><h3 id="emoji-category"></h3><div id="emoji-grid" class="emoji-grid"></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
