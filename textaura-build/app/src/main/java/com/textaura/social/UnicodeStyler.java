@@ -19,6 +19,7 @@ final class UnicodeStyler {
         register(TextStyle.CIRCLE,"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ","ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ","⓪①②③④⑤⑥⑦⑧⑨");
     }
     private UnicodeStyler(){}
+
     static String apply(String input,TextStyle style){
         if(style==TextStyle.NORMAL)return normal(input);
         if(style==TextStyle.FULL)return full(normal(input));
@@ -33,14 +34,34 @@ final class UnicodeStyler {
         for(int cp:normal(input).codePoints().toArray()){String mapped=map==null?null:map.get(cp);if(mapped==null)out.appendCodePoint(cp);else out.append(mapped);}
         return out.toString();
     }
+
     static String normal(String input){
         String x=unwrap(input,"🟨 "," 🟨");x=unwrap(x,"✨ "," ✨");x=unwrap(x,"💖 "," 💖");x=unwrap(x,"【","】");
         StringBuilder out=new StringBuilder();
-        for(int cp:x.codePoints().toArray()){if(cp==0x332||cp==0x336||cp==0x305)continue;String mapped=REVERSE.get(cp);if(mapped!=null)out.append(mapped);else if(cp==0x3000)out.append(' ');else if(cp>=0xFF01&&cp<=0xFF5E)out.appendCodePoint(cp-0xFEE0);else out.appendCodePoint(cp);}
+        for(int cp:x.codePoints().toArray()){
+            if(cp==0x332||cp==0x336||cp==0x305)continue;
+            String mapped=REVERSE.get(cp);
+            if(mapped!=null)out.append(mapped);
+            else if(cp==0x3000)out.append(' ');
+            else if(cp>=0xFF01&&cp<=0xFF5E)out.appendCodePoint(cp-0xFEE0);
+            else out.appendCodePoint(cp);
+        }
         return out.toString();
     }
+
     private static String unwrap(String x,String prefix,String suffix){return x.startsWith(prefix)&&x.endsWith(suffix)&&x.length()>=prefix.length()+suffix.length()?x.substring(prefix.length(),x.length()-suffix.length()):x;}
-    private static String mark(String x,int mark){StringBuilder out=new StringBuilder();for(int cp:x.codePoints().toArray()){out.appendCodePoint(cp);if(Character.isLetterOrDigit(cp))out.appendCodePoint(mark);}return out.toString();}
+
+    private static String mark(String x,int mark){
+        StringBuilder out=new StringBuilder();
+        for(int cp:x.codePoints().toArray()){
+            out.appendCodePoint(cp);
+            int type=Character.getType(cp);
+            boolean combining=type==Character.NON_SPACING_MARK||type==Character.COMBINING_SPACING_MARK||type==Character.ENCLOSING_MARK;
+            if(cp!='\n'&&cp!='\r'&&!combining)out.appendCodePoint(mark);
+        }
+        return out.toString();
+    }
+
     private static String full(String x){StringBuilder out=new StringBuilder();for(int cp:x.codePoints().toArray()){if(cp==32)out.appendCodePoint(0x3000);else if(cp>=33&&cp<=126)out.appendCodePoint(cp+0xFEE0);else out.appendCodePoint(cp);}return out.toString();}
     private static void register(TextStyle style,String upper,String lower,String digits){Map<Integer,String> map=new HashMap<>();add(map,U,upper);add(map,L,lower);add(map,D,digits);TABLES.put(style,map);reverse(U,upper);reverse(L,lower);reverse(D,digits);}
     private static void add(Map<Integer,String> map,String source,String target){int[] a=source.codePoints().toArray(),b=target.codePoints().toArray();for(int i=0;i<Math.min(a.length,b.length);i++)map.put(a[i],new String(Character.toChars(b[i])));}
