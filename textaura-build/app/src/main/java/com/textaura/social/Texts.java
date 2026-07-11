@@ -21,6 +21,9 @@ final class Texts {
         put("clear","Effacer","Clear","Borrar","Löschen","مسح");
         put("undo","Annuler","Undo","Deshacer","Rückgängig","تراجع");
         put("redo","Rétablir","Redo","Rehacer","Wiederholen","إعادة");
+        put("hide_keyboard","Masquer le clavier","Hide keyboard","Ocultar teclado","Tastatur ausblenden","إخفاء لوحة المفاتيح");
+        put("selection_saved","Sélection conservée","Selection preserved","Selección conservada","Auswahl gespeichert","تم حفظ التحديد");
+        put("emoji_added","Emoji déjà ajouté","Emoji already added","Emoji ya añadido","Emoji bereits hinzugefügt","تمت إضافة الرمز مسبقًا");
         put("chars","caractères","characters","caracteres","Zeichen","حرفًا");
         put("empty","Écrivez d’abord un texte.","Write some text first.","Primero escribe un texto.","Schreibe zuerst einen Text.","اكتب نصًا أولًا.");
         put("copied","Texte copié","Text copied","Texto copiado","Text kopiert","تم نسخ النص");
