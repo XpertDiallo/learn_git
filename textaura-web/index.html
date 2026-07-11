@@ -41,7 +41,7 @@
         <button id="underline-color" class="tool"><strong>A̲</strong><span data-i18n="underlineColor">Soulignement</span></button>
         <button id="remove-colors" class="tool"><strong>✕</strong><span data-i18n="removeColors">Retirer couleurs</span></button>
       </div></section>
-      <section class="card"><h2 data-i18n="paragraphs">Alignement, paragraphes et listes</h2><div id="align-tools" class="tool-row" role="toolbar" aria-label="Alignement"></div><h3>Listes</h3><div id="list-tools" class="tool-row" role="toolbar" aria-label="Listes"></div></section>
+      <section class="card"><h2 data-i18n="paragraphs">Alignement, paragraphes et listes</h2><div id="align-tools" class="tool-row" role="toolbar" aria-label="Alignement"></div><h3 data-i18n="lists">Listes</h3><div id="list-tools" class="tool-row" role="toolbar" aria-label="Listes"></div></section>
       <section class="card preview-card"><h2 data-i18n="preview">Aperçu</h2><div id="preview" class="preview empty" aria-live="polite">…</div></section>
       <section class="card share-card"><div class="share-actions"><button id="copy" class="primary" type="button">⧉ <span data-i18n="copy">Copier</span></button><button id="share" class="secondary" type="button">↗ <span data-i18n="share">Partager</span></button><button id="png" class="accent" type="button">▣ <span data-i18n="png">Exporter PNG</span></button></div></section>
       <p class="privacy" data-i18n="privacy">🔒 Hors ligne, sans compte et sans traçage.</p>
@@ -49,7 +49,7 @@
   </div>
 
   <dialog id="color-dialog" aria-labelledby="color-title"><div class="dialog-head"><h2 id="color-title" data-i18n="choose">Choisir une couleur</h2><button type="button" data-close aria-label="Fermer">✕</button></div><div id="color-grid" class="color-grid"></div><button class="dialog-close" type="button" data-close data-i18n="close">Fermer</button></dialog>
-  <dialog id="emoji-dialog" class="emoji-dialog" aria-labelledby="emoji-title"><div class="dialog-head"><h2 id="emoji-title">Bibliothèque d’emojis</h2><button type="button" data-close aria-label="Fermer">✕</button></div><input id="emoji-search" class="emoji-search" type="search" placeholder="Rechercher un emoji…" autocomplete="off"><div id="emoji-tabs" class="emoji-tabs"></div><h3 id="emoji-category"></h3><div id="emoji-grid" class="emoji-grid"></div></dialog>
+  <dialog id="emoji-dialog" class="emoji-dialog" aria-labelledby="emoji-title"><div class="dialog-head"><h2 id="emoji-title" data-i18n="emojiLibrary">Bibliothèque d’emojis</h2><button type="button" data-close aria-label="Fermer">✕</button></div><input id="emoji-search" class="emoji-search" type="search" placeholder="Rechercher un emoji…" autocomplete="off"><div id="emoji-tabs" class="emoji-tabs"></div><h3 id="emoji-category"></h3><div id="emoji-grid" class="emoji-grid"></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
   <script type="module" src="./app.js"></script>
 </body>
