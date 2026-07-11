@@ -25,6 +25,8 @@ jobs:
         with:
           gradle-version: '8.9'
       - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Apply TextAura v2.2 source patch
+        run: python3 tools/apply_v22.py
       - name: Build APK
         run: |
           set -o pipefail
