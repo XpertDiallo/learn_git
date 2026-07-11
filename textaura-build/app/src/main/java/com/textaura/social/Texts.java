@@ -30,7 +30,7 @@ final class Texts {
         put("share_with","Partager avec…","Share with…","Compartir con…","Teilen mit…","مشاركة عبر…");
         put("privacy","🔒 Hors ligne, sans compte. Vos textes restent sur votre téléphone.","🔒 Offline, no account. Your texts stay on your phone.","🔒 Sin conexión ni cuenta. Tus textos permanecen en tu teléfono.","🔒 Offline, ohne Konto. Deine Texte bleiben auf deinem Telefon.","🔒 يعمل دون إنترنت أو حساب. تبقى نصوصك على هاتفك.");
         put("app_missing","Application non installée : ouverture du menu de partage.","App not installed: opening the share menu.","Aplicación no instalada: se abre el menú de compartir.","App nicht installiert: Das Teilen-Menü wird geöffnet.","التطبيق غير مثبت: سيتم فتح قائمة المشاركة.");
-        put("rich_note","Les couleurs, le surligneur et le soulignement continu sont conservés dans l’image. Le texte simple des réseaux sociaux ne prend pas en charge les couleurs.","Colors, highlighting and continuous underlining are preserved in the image. Plain social-media text does not support colors.","Los colores, el resaltado y el subrayado continuo se conservan en la imagen. El texto simple de las redes no admite colores.","Farben, Markierung und durchgehende Unterstreichung bleiben im Bild erhalten. Einfacher Social-Media-Text unterstützt keine Farben.","تُحفظ الألوان والتظليل والخط المتصل في الصورة. النص العادي في الشبكات الاجتماعية لا يدعم الألوان.");
+        put("rich_note","Les couleurs, les alignements, les puces, le surligneur et le soulignement continu sont conservés dans l’image. Le texte simple des réseaux sociaux ne prend pas en charge les couleurs ni l’alignement.","Colors, alignment, lists, highlighting and continuous underlining are preserved in the image. Plain social-media text does not support colors or alignment.","Los colores, la alineación, las listas, el resaltado y el subrayado continuo se conservan en la imagen. El texto simple de las redes no admite colores ni alineación.","Farben, Ausrichtung, Listen, Markierung und durchgehende Unterstreichung bleiben im Bild erhalten. Einfacher Social-Media-Text unterstützt keine Farben oder Ausrichtung.","تُحفظ الألوان والمحاذاة والقوائم والتظليل والخط المتصل في الصورة. النص العادي في الشبكات الاجتماعية لا يدعم الألوان أو المحاذاة.");
 
         put("normal","Normal","Normal","Normal","Normal","عادي");
         put("bold","Gras","Bold","Negrita","Fett","عريض");
@@ -74,6 +74,24 @@ final class Texts {
         put("underline_color","Soulignement couleur","Underline color","Color de subrayado","Unterstreichungsfarbe","لون التسطير");
         put("clear_colors","Retirer les couleurs","Remove colors","Quitar colores","Farben entfernen","إزالة الألوان");
         put("color_title","Choisir une couleur","Choose a color","Elegir un color","Farbe wählen","اختر لونًا");
+
+        put("paragraph_tools","Alignement, paragraphes et listes","Alignment, paragraphs and lists","Alineación, párrafos y listas","Ausrichtung, Absätze und Listen","المحاذاة والفقرات والقوائم");
+        put("alignment","Alignement du texte","Text alignment","Alineación del texto","Textausrichtung","محاذاة النص");
+        put("align_left","Aligner à gauche","Align left","Alinear a la izquierda","Linksbündig","محاذاة لليسار");
+        put("align_center","Centré","Centered","Centrado","Zentriert","توسيط");
+        put("align_right","Aligner à droite","Align right","Alinear a la derecha","Rechtsbündig","محاذاة لليمين");
+        put("justify","Justifier le texte","Justify text","Justificar texto","Blocksatz","ضبط النص");
+        put("lists","Puces et listes","Bullets and lists","Viñetas y listas","Aufzählungen und Listen","التعداد والقوائم");
+        put("list_number","Numérique","Numbered","Numérica","Nummeriert","رقمية");
+        put("list_letter","Lettres","Letters","Letras","Buchstaben","حروف");
+        put("list_roman","Chiffres romains","Roman numerals","Números romanos","Römische Zahlen","أرقام رومانية");
+        put("list_bullet","Puce ronde","Round bullet","Viñeta redonda","Runder Punkt","نقطة");
+        put("list_dash","Tiret","Dash","Guion","Gedankenstrich","شرطة");
+        put("list_check","Coche","Check mark","Marca de verificación","Häkchen","علامة صح");
+        put("list_arrow","Flèche","Arrow","Flecha","Pfeil","سهم");
+        put("list_star","Étoile","Star","Estrella","Stern","نجمة");
+        put("list_diamond","Losange","Diamond","Rombo","Raute","معين");
+        put("list_remove","Retirer les puces","Remove bullets","Quitar viñetas","Aufzählung entfernen","إزالة التعداد");
 
         put("language","Langue","Language","Idioma","Sprache","اللغة");
         put("emoji_title","Bibliothèque d’emojis","Emoji library","Biblioteca de emojis","Emoji-Bibliothek","مكتبة الرموز التعبيرية");
