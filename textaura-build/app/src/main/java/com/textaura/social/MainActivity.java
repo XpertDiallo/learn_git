@@ -31,7 +31,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -751,7 +750,7 @@ public class MainActivity extends Activity {
 
         LinearLayout root = col();
         root.setPadding(dp(12), dp(12), dp(12), dp(12));
-        root.setBackground(Color.WHITE);
+        root.setBackgroundColor(Color.WHITE);
 
         LinearLayout header = row();
         header.setGravity(Gravity.CENTER_VERTICAL);
