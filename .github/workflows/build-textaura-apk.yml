@@ -25,8 +25,20 @@ jobs:
         with:
           gradle-version: '8.9'
       - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-      - run: gradle :app:assembleDebug --stacktrace
-      - uses: actions/upload-artifact@v4
+      - name: Build APK
+        run: |
+          set -o pipefail
+          gradle :app:assembleDebug --stacktrace 2>&1 | tee build.log
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TextAura-build-log
+          path: textaura-build/build.log
+          if-no-files-found: warn
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
         with:
           name: TextAura-APK
           path: textaura-build/app/build/outputs/apk/debug/app-debug.apk
