@@ -18,11 +18,10 @@ final class ColorUnderlineSpan extends CharacterStyle implements UpdateAppearanc
 
     @Override
     public void updateDrawState(TextPaint paint) {
+        paint.setUnderlineText(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            float thickness = Math.max(2f, paint.getTextSize() / 14f);
-            paint.setUnderlineText(color, thickness);
-        } else {
-            paint.setUnderlineText(true);
+            paint.underlineColor = color;
+            paint.underlineThickness = Math.max(2f, paint.getTextSize() / 14f);
         }
     }
 }
