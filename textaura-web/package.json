@@ -1,0 +1,1 @@
+{"name":"textaura-web","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node test-core.mjs","check":"node --check core.js && node --check emoji-data.js && node --check app.js && node test-core.mjs","serve":"python3 -m http.server 4173"}}
