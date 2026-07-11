@@ -34,16 +34,22 @@ final class ListFormatter {
             if (line.trim().isEmpty()) continue;
 
             Matcher matcher = PREFIX.matcher(line);
-            int prefixEnd = matcher.find() ? matcher.end() : 0;
-            String indentation = matcher.find(0) ? matcher.group(1) : leadingWhitespace(line);
-            if (prefixEnd > 0) {
+            int insertionPoint;
+            if (matcher.find()) {
+                String indentation = matcher.group(1);
+                int prefixEnd = matcher.end();
                 builder.delete(lineStart, lineStart + prefixEnd);
                 delta -= prefixEnd;
+                builder.insert(lineStart, indentation);
+                delta += indentation.length();
+                insertionPoint = lineStart + indentation.length();
+            } else {
+                insertionPoint = lineStart + leadingWhitespaceLength(line);
             }
 
             if (!"remove".equals(mode)) {
-                String prefix = indentation + prefixFor(mode, index + 1);
-                builder.insert(lineStart, prefix);
+                String prefix = prefixFor(mode, index + 1);
+                builder.insert(insertionPoint, prefix);
                 delta += prefix.length();
             }
         }
@@ -56,10 +62,10 @@ final class ListFormatter {
         return end;
     }
 
-    private static String leadingWhitespace(String line) {
+    private static int leadingWhitespaceLength(String line) {
         int index = 0;
         while (index < line.length() && Character.isWhitespace(line.charAt(index)) && line.charAt(index) != '\n') index++;
-        return line.substring(0, index);
+        return index;
     }
 
     private static String prefixFor(String mode, int number) {
