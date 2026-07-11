@@ -29,8 +29,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         0xFF7C2D12,0xFF0F766E,0xFF4338CA,0xFFBE123C,0xFF000000,0xFFFFFFFF
     };
 
-    private EditText editor;
+    private SelectionEditText editor;
     private TextView preview;
     private TextView count;
     private final Deque<TextState> undoStack = new ArrayDeque<>();
@@ -71,6 +71,9 @@ public class MainActivity extends Activity {
     private TextState typingBefore;
     private boolean internal;
     private int langIndex;
+    private int savedSelectionStart = -1;
+    private int savedSelectionEnd = -1;
+    private boolean savedSelectionActive;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -180,13 +183,19 @@ public class MainActivity extends Activity {
         line.addView(title(t("your_text")), new LinearLayout.LayoutParams(0, -2, 1));
         count = text("0 " + t("chars"), 12, 0xFF667085);
         line.addView(count);
+        Button hideKeyboard = button("⌨↓", 0xFFEFF6FF, 0xFF1B1F3B, 16);
+        hideKeyboard.setContentDescription(t("hide_keyboard"));
+        hideKeyboard.setOnClickListener(v -> hideKeyboardPreservingSelection());
+        LinearLayout.LayoutParams keyboardParams = new LinearLayout.LayoutParams(dp(48), dp(38));
+        keyboardParams.setMargins(dp(7), 0, 0, 0);
+        line.addView(hideKeyboard, keyboardParams);
         card.addView(line);
 
         TextView tip = text(t("tip"), 11, 0xFF667085);
         tip.setPadding(0, dp(4), 0, dp(8));
         card.addView(tip);
 
-        editor = new EditText(this);
+        editor = new SelectionEditText(this);
         editor.setHint(t("hint"));
         editor.setTextSize(18);
         editor.setTextColor(0xFF1B1F3B);
@@ -198,6 +207,16 @@ public class MainActivity extends Activity {
         editor.setVerticalScrollBarEnabled(true);
         editor.setPadding(dp(13), dp(12), dp(13), dp(12));
         editor.setBackground(round(0xFFFAFAFF, 16, 0xFFE1E1F0, 1));
+        editor.setSelectionListener((start, end, fromTouch) -> {
+            if (internal) return;
+            int a = Math.min(start, end);
+            int b = Math.max(start, end);
+            if (a != b) {
+                rememberSelection(a, b);
+            } else if (fromTouch) {
+                clearRememberedSelection();
+            }
+        });
         card.addView(editor, new LinearLayout.LayoutParams(-1, -2));
 
         editor.addTextChangedListener(new TextWatcher() {
@@ -209,6 +228,7 @@ public class MainActivity extends Activity {
                 if (!internal && typingBefore != null && !typingBefore.text.toString().equals(editable.toString())) {
                     pushUndo(typingBefore);
                     redoStack.clear();
+                    clearRememberedSelection();
                 }
                 typingBefore = null;
                 refresh();
@@ -460,6 +480,7 @@ public class MainActivity extends Activity {
         pushUndo(previous);
         redoStack.clear();
         editor.setSelection(range[0], range[1]);
+        rememberSelection(range[0], range[1]);
         refresh();
     }
 
@@ -476,6 +497,7 @@ public class MainActivity extends Activity {
 
     private void showColorPicker(int mode) {
         if (!hasText()) return;
+        rememberCurrentSelection();
         GridLayout grid = new GridLayout(this);
         grid.setColumnCount(6);
         grid.setPadding(dp(12), dp(12), dp(12), dp(12));
@@ -527,6 +549,7 @@ public class MainActivity extends Activity {
         pushUndo(previous);
         redoStack.clear();
         editor.setSelection(range[0], range[1]);
+        rememberSelection(range[0], range[1]);
         refresh();
     }
 
@@ -543,6 +566,7 @@ public class MainActivity extends Activity {
         pushUndo(previous);
         redoStack.clear();
         editor.setSelection(range[0], range[1]);
+        rememberSelection(range[0], range[1]);
         refresh();
     }
 
@@ -570,6 +594,40 @@ public class MainActivity extends Activity {
         restoreState(next);
     }
 
+    private void hideKeyboardPreservingSelection() {
+        rememberCurrentSelection();
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (keyboard != null) keyboard.hideSoftInputFromWindow(editor.getWindowToken(), 0);
+        editor.postDelayed(() -> {
+            if (savedSelectionActive && savedSelectionEnd <= editor.length()) {
+                internal = true;
+                editor.setSelection(savedSelectionStart, savedSelectionEnd);
+                internal = false;
+            }
+        }, 120);
+        toast(t("selection_saved"));
+    }
+
+    private void rememberCurrentSelection() {
+        if (editor == null) return;
+        int start = Math.max(0, editor.getSelectionStart());
+        int end = Math.max(0, editor.getSelectionEnd());
+        if (start != end) rememberSelection(Math.min(start, end), Math.max(start, end));
+    }
+
+    private void rememberSelection(int start, int end) {
+        if (start < 0 || end <= start || end > editor.length()) return;
+        savedSelectionStart = start;
+        savedSelectionEnd = end;
+        savedSelectionActive = true;
+    }
+
+    private void clearRememberedSelection() {
+        savedSelectionStart = -1;
+        savedSelectionEnd = -1;
+        savedSelectionActive = false;
+    }
+
     private void pushUndo(TextState state) {
         if (state == null) return;
         if (undoStack.size() >= 100) undoStack.removeLast();
@@ -580,6 +638,10 @@ public class MainActivity extends Activity {
         if (editor == null) return new TextState(new SpannableString(""), 0, 0);
         int start = Math.max(0, editor.getSelectionStart());
         int end = Math.max(0, editor.getSelectionEnd());
+        if (start == end && savedSelectionActive && savedSelectionEnd <= editor.length()) {
+            start = savedSelectionStart;
+            end = savedSelectionEnd;
+        }
         return new TextState(new SpannableString(editor.getText()), start, end);
     }
 
@@ -601,6 +663,8 @@ public class MainActivity extends Activity {
         int end = Math.max(0, Math.min(selectionEnd, length));
         editor.setSelection(Math.min(start, end), Math.max(start, end));
         internal = false;
+        if (start != end) rememberSelection(Math.min(start, end), Math.max(start, end));
+        else clearRememberedSelection();
         refresh();
     }
 
@@ -629,7 +693,24 @@ public class MainActivity extends Activity {
         int start = Math.max(0, editor.getSelectionStart());
         int end = Math.max(0, editor.getSelectionEnd());
         if (start > end) { int swap = start; start = end; end = swap; }
-        if (start == end) { start = 0; end = editor.length(); }
+        if (start != end) {
+            rememberSelection(start, end);
+            return new int[] {start, end};
+        }
+        if (savedSelectionActive && savedSelectionStart >= 0 && savedSelectionEnd <= editor.length()) {
+            return new int[] {savedSelectionStart, savedSelectionEnd};
+        }
+        return new int[] {0, editor.length()};
+    }
+
+    private int[] selectionOrCaret() {
+        int start = Math.max(0, editor.getSelectionStart());
+        int end = Math.max(0, editor.getSelectionEnd());
+        if (start > end) { int swap = start; start = end; end = swap; }
+        if (start != end) return new int[] {start, end};
+        if (savedSelectionActive && savedSelectionEnd <= editor.length()) {
+            return new int[] {savedSelectionStart, savedSelectionEnd};
+        }
         return new int[] {start, end};
     }
 
@@ -745,6 +826,7 @@ public class MainActivity extends Activity {
     }
 
     private void emojis() {
+        rememberCurrentSelection();
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -812,23 +894,41 @@ public class MainActivity extends Activity {
     private void fillEmojiGrid(GridLayout grid, int category, int columns, int cell) {
         grid.removeAllViews();
         grid.setColumnCount(columns);
+        String currentText = editor.getText().toString();
         for (String emoji : EmojiData.EMOJIS[category]) {
+            boolean alreadyUsed = currentText.contains(emoji);
             TextView item = text(emoji, 26, Color.BLACK);
             item.setGravity(Gravity.CENTER);
-            item.setBackground(round(0xFFF8F8FD, 13, 0xFFE4E4EE, 1));
+            styleEmojiCell(item, alreadyUsed);
+            item.setContentDescription(alreadyUsed ? emoji + ", " + t("emoji_added") : emoji);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = cell - dp(6);
             params.height = cell - dp(6);
             params.setMargins(dp(3), dp(3), dp(3), dp(3));
             grid.addView(item, params);
-            item.setOnClickListener(v -> insert(((TextView) v).getText().toString()));
+            item.setOnClickListener(v -> {
+                String selectedEmoji = ((TextView) v).getText().toString();
+                insert(selectedEmoji);
+                styleEmojiCell((TextView) v, true);
+                v.setContentDescription(selectedEmoji + ", " + t("emoji_added"));
+            });
         }
     }
 
+    private void styleEmojiCell(TextView item, boolean selected) {
+        item.setBackground(round(
+            selected ? 0xFFD7F7EF : 0xFFF8F8FD,
+            13,
+            selected ? 0xFF0F9D8B : 0xFFE4E4EE,
+            selected ? 2 : 1
+        ));
+        item.setElevation(selected ? dp(3) : 0);
+    }
+
     private void insert(String value) {
-        int start = Math.max(0, editor.getSelectionStart());
-        int end = Math.max(0, editor.getSelectionEnd());
-        if (start > end) { int swap = start; start = end; end = swap; }
+        int[] range = selectionOrCaret();
+        int start = range[0];
+        int end = range[1];
         TextState previous = capture();
         SpannableStringBuilder builder = new SpannableStringBuilder(editor.getText());
         builder.replace(start, end, value);
@@ -929,6 +1029,8 @@ public class MainActivity extends Activity {
         button.setPadding(dp(10), 0, dp(10), 0);
         button.setMinWidth(0);
         button.setMinHeight(0);
+        button.setFocusable(false);
+        button.setFocusableInTouchMode(false);
         button.setBackground(round(background, 15, 0xFFE2E2EC, 1));
         return button;
     }
