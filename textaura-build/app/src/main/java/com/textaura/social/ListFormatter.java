@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 final class ListFormatter {
     private static final Pattern PREFIX = Pattern.compile(
-        "^(\\s*)(?:(?:\\d+|[A-Za-z]|[IVXLCDMivxlcdm]+)[.)]|[•◦▪▫●○◆◇★☆✓✔➜→–—-])\\s+"
+        "^(\\s*)(?:(?:\\d+|[A-Za-z]|[IVXLCDMivxlcdm]+)[.)]|[•◦▪▫●○◆◇★☆✓✔➜→–—♥❤⚡📌▲△■□-])\\s+"
     );
 
     private ListFormatter() {}
@@ -32,6 +32,20 @@ final class ListFormatter {
             int lineEnd = findLineEnd(builder, lineStart, safeEnd + delta);
             String line = builder.subSequence(lineStart, lineEnd).toString();
             if (line.trim().isEmpty()) continue;
+
+            if ("indent".equals(mode)) {
+                builder.insert(lineStart, "    ");
+                delta += 4;
+                continue;
+            }
+            if ("outdent".equals(mode)) {
+                int removable = Math.min(4, leadingWhitespaceLength(line));
+                if (removable > 0) {
+                    builder.delete(lineStart, lineStart + removable);
+                    delta -= removable;
+                }
+                continue;
+            }
 
             Matcher matcher = PREFIX.matcher(line);
             int insertionPoint;
@@ -71,29 +85,37 @@ final class ListFormatter {
     private static String prefixFor(String mode, int number) {
         switch (mode) {
             case "number": return number + ". ";
-            case "letter": return letters(number) + ". ";
-            case "roman": return roman(number) + ". ";
+            case "letter": return letters(number, true) + ". ";
+            case "letter_lower": return letters(number, false) + ". ";
+            case "roman": return roman(number, true) + ". ";
+            case "roman_lower": return roman(number, false) + ". ";
+            case "circle": return "○ ";
+            case "square": return "■ ";
+            case "triangle": return "▲ ";
             case "dash": return "– ";
             case "check": return "✓ ";
             case "arrow": return "➜ ";
             case "star": return "★ ";
             case "diamond": return "◆ ";
+            case "heart": return "♥ ";
+            case "lightning": return "⚡ ";
+            case "pin": return "📌 ";
             default: return "• ";
         }
     }
 
-    private static String letters(int number) {
+    private static String letters(int number, boolean upper) {
         StringBuilder result = new StringBuilder();
         int n = Math.max(1, number);
         while (n > 0) {
             n--;
-            result.insert(0, (char) ('A' + (n % 26)));
+            result.insert(0, (char) ((upper ? 'A' : 'a') + (n % 26)));
             n /= 26;
         }
         return result.toString();
     }
 
-    private static String roman(int value) {
+    private static String roman(int value, boolean upper) {
         int number = Math.max(1, Math.min(value, 3999));
         int[] values = {1000,900,500,400,100,90,50,40,10,9,5,4,1};
         String[] symbols = {"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
@@ -104,6 +126,7 @@ final class ListFormatter {
                 number -= values[i];
             }
         }
-        return result.toString().toUpperCase(Locale.ROOT);
+        String output = result.toString();
+        return upper ? output.toUpperCase(Locale.ROOT) : output.toLowerCase(Locale.ROOT);
     }
 }
