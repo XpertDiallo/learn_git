@@ -1,0 +1,6 @@
+package com.textaura.social;
+
+enum TextStyle {
+    NORMAL, BOLD, ITALIC, BOLDITALIC, SERIF, MONO, DOUBLE, SCRIPT, SMALL, FULL, CIRCLE,
+    UNDER, STRIKE, OVER, HIGHLIGHT, SPARK, HEART, FRAME
+}

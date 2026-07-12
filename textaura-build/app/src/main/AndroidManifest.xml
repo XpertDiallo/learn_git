@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <queries>
+    <package android:name="com.whatsapp"/>
+    <package android:name="com.linkedin.android"/>
+    <package android:name="com.facebook.katana"/>
+    <package android:name="com.facebook.orca"/>
+    <package android:name="com.twitter.android"/>
+    <package android:name="com.instagram.android"/>
+    <package android:name="com.instagram.barcelona"/>
+    <package android:name="org.telegram.messenger"/>
+    <intent><action android:name="android.intent.action.SEND"/><data android:mimeType="text/plain"/></intent>
+    <intent><action android:name="android.intent.action.SEND"/><data android:mimeType="image/png"/></intent>
+    <intent><action android:name="android.intent.action.SENDTO"/><data android:scheme="mailto"/></intent>
+    <intent><action android:name="android.intent.action.SENDTO"/><data android:scheme="smsto"/></intent>
+  </queries>
+
+  <application
+      android:allowBackup="false"
+      android:fullBackupContent="false"
+      android:usesCleartextTraffic="false"
+      android:label="TextAura"
+      android:icon="@android:drawable/ic_menu_edit"
+      android:supportsRtl="true"
+      android:theme="@android:style/Theme.Material.Light.NoActionBar">
+
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+      <meta-data
+          android:name="android.support.FILE_PROVIDER_PATHS"
+          android:resource="@xml/file_paths"/>
+    </provider>
+
+    <activity
+        android:name=".MainActivity"
+        android:exported="true"
+        android:windowSoftInputMode="adjustResize">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="text/plain"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>
