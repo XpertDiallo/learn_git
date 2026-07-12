@@ -172,6 +172,17 @@ final class TextTransformer {
             unique.add("#" + word.toLowerCase(locale));
             if (unique.size() >= 20) break;
         }
-        return String.join(" ", unique);
+        return join(unique, " ");
+    }
+
+    private static String join(Iterable<String> values, String separator) {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (String value : values) {
+            if (!first) result.append(separator);
+            result.append(value);
+            first = false;
+        }
+        return result.toString();
     }
 }
