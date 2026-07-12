@@ -8,6 +8,9 @@ on:
     paths: ['textaura-build/**', '.github/workflows/build-textaura-apk.yml']
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,23 +28,28 @@ jobs:
         with:
           gradle-version: '8.9'
       - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-      - name: Apply TextAura v2.2 source patch
-        run: python3 tools/apply_v22.py
+      - name: Unit tests
+        run: |
+          set -o pipefail
+          gradle :app:testDebugUnitTest --stacktrace 2>&1 | tee test.log
       - name: Build APK
         run: |
           set -o pipefail
           gradle :app:assembleDebug --stacktrace 2>&1 | tee build.log
-      - name: Upload build log
+      - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: TextAura-build-log
-          path: textaura-build/build.log
+          name: TextAura-v3-diagnostics
+          path: |
+            textaura-build/test.log
+            textaura-build/build.log
+            textaura-build/app/build/reports/tests/testDebugUnitTest/**
           if-no-files-found: warn
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: TextAura-APK
+          name: TextAura-v3.0.0-APK
           path: textaura-build/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
