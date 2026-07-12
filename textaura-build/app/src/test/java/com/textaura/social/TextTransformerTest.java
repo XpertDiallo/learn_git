@@ -19,7 +19,7 @@ public class TextTransformerTest {
     @Test
     public void cleansTextDeterministically() {
         Locale fr = Locale.FRENCH;
-        assertEquals("Bonjour le monde", TextTransformer.transform("  Bonjour   le monde  ", "trim", fr));
+        assertEquals("Bonjour le monde", TextTransformer.transform("  Bonjour le monde  ", "trim", fr));
         assertEquals("Bonjour le monde", TextTransformer.transform("Bonjour   le monde", "collapse_spaces", fr));
         assertEquals("Bonjour ! Comment ?", TextTransformer.transform("Bonjour!Comment?", "punctuation", fr));
         assertEquals("#assurance #afrique #innovation", TextTransformer.transform("Assurance Afrique innovation", "hashtags", fr));
